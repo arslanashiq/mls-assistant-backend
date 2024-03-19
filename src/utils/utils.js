@@ -202,19 +202,19 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
   attachments_file_array = []
 ) => {
   const SES_CONFIG = {
-    accessKeyId: "AKIASFHMCRVPU3V2LPUW",
-    secretAccessKey: "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",
-    region: "us-west-1",
+    accessKeyId: "123",
+    secretAccessKey: "123",
+    region: "123",
   };
 
   const AWS_SES = new AWS.SES(SES_CONFIG);
 
   let params = {
-    Source: "Meta Logix Tech<support@metalogixtech.com>",
+    Source: "",
     Destination: {
       ToAddresses: [email],
     },
-    ReplyToAddresses: ["support@metalogixtech.com"],
+    ReplyToAddresses: [""],
     Message: {
       Body: {
         Html: {
