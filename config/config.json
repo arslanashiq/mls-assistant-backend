@@ -1,9 +1,0 @@
-// {
-//     "local": {
-//         "PORT": 4615,
-//         "TEMPLATE_IP": "192.168.100.37",
-//         "TEMPLATE_MONGODB_URI": "mongodb://127.0.0.1:27017/house-rent",
-//         "TEMPLATE_JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
-//         "TEMPLATE_NODE_ENV": "local"
-//     }
-// }
