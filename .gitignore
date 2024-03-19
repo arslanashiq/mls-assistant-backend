@@ -1,0 +1,7 @@
+# dependencies
+/node_modules
+access.log
+package-lock.json
+.env
+.idea
+.vscode
