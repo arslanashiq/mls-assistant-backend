@@ -1,0 +1,8 @@
+// export  TEMPLATE_PORT=4605
+// export  TEMPLATE_MONGODB_URI="mongodb://127.0.0.1:27017/house-rent"
+// export  TEMPLATE_JWT_SECRET="3ZGErMDCyxTOZYFr56HGD"
+// export  TEMPLATE_NODE_ENV="dev"
+// export TEMPLATE_AWS_ACCESS_KEY="AJIASNAMCRVPU4OBRIH8"
+// export TEMPLATE_AWS_SECRET_ACCESS_KEY="Is/IdNxzJ88xsY2GsTmmZHxoTqNREfz/irp+wKjv"
+// export  TEMPLATE_REGION="us-east-1"
+// export  TEMPLATE_BUCKET="bucket"

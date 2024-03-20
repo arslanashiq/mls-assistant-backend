@@ -6,8 +6,8 @@ function validate_customer_signup(body) {
     password: Joi.string().min(5).max(255).required().trim(),
     first_name: Joi.string().required().min(2).trim(),
     last_name: Joi.string().required().min(2).trim(),
-    contact_number: Joi.string().required().trim(),
-    post_code: Joi.string().required().trim(),
+    contact_number: Joi.string().allow([null,'']),
+    post_code: Joi.string().allow([null,'']),
   };
   return Joi.validate(body, schema);
 }

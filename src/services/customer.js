@@ -48,7 +48,7 @@ const _signupCustomer = async (body, resp) => {
     profile_image: "",
     contact_number: body.contact_number,
     post_code: body.post_code,
-    status: true,
+    status: false,
   };
   const final_customer = await Signup_customer(customer_obj);
   //generating token'
