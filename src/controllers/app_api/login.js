@@ -19,10 +19,10 @@ const login = async (req, res) => {
       data,
     } = await loginUser(req.body);
 
-    if (error || !data?.admin?.status) {
+    if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message||"Invalid Email",
+        message: error_message || "Invalid Email",
       });
     }
     return res.status(200).json({

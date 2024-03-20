@@ -230,6 +230,33 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
   };
   return AWS_SES.sendEmail(params).promise(); // or something
 };
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+
+// Initialize Mailgun client
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({ username: 'api', key: "1af8fe547151284e9f198f69d76ac047-309b0ef4-acb69a19" });
+
+// Function to send an email using Mailgun
+const sendEmail = async (to, subject, text, html)=> {
+    try {
+        const response = await mg.messages.create('sandbox-123.mailgun.org', {
+            from: "Excited User <mailgun@sandbox-123.mailgun.org>",
+            to: Array.isArray(to) ? to : [to],
+            subject: subject,
+            text: text,
+            html: html
+        });
+        console.log("Email sent successfully:", response);
+        return response;
+    } catch (error) {
+        console.error("Error sending email:", error);
+        throw error;
+    }
+}
+
+// Example usage of the sendEmail function
+
 module.exports = {
   RENDER_BAD_REQUEST,
   CHANGE_DEL_ORDER,
@@ -242,4 +269,5 @@ module.exports = {
   UPLOAD_S3_IMAGE,
   SEND_NOTIFICATION,
   NOTIFY_BY_EMAIL_FROM_SES,
+  sendEmail
 };

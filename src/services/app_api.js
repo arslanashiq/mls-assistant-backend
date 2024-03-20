@@ -1,4 +1,4 @@
-const {v1: uuidv1} = require("uuid");
+const { v1: uuidv1 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
@@ -17,12 +17,12 @@ const {
   find_user_by_id,
   checking_email_exist,
 } = require("../DAL/user");
-const {detail_admin} = require("../DAL/admin");
+const { detail_admin } = require("../DAL/admin");
 const {
   find_customer_by_user_id,
 } = require("../DAL/customer");
-const {v1: uuidv4} = require("uuid");
-const {getAudioDurationInSeconds} = require("get-audio-duration");
+const { v1: uuidv4 } = require("uuid");
+const { getAudioDurationInSeconds } = require("get-audio-duration");
 const fs = require("fs");
 //**********************************{LOGIN API}***************************************************
 const _loginUser = async (body, resp) => {
@@ -44,12 +44,16 @@ const _loginUser = async (body, resp) => {
   //   resp.error_message = "Invalid Email or Password";
   //   return resp;
   // }
-
- // generating token
+  if (user.status == false) {
+    resp.error = true;
+    resp.error_message = "Contact Support";
+    return resp;
+  }
+  // generating token
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt
-    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
+    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
     .toString();
   const add_session = await add_to_session(json_token, user._id);
 
@@ -337,7 +341,7 @@ const _uplaodImage = async (files, resp) => {
   const upload_image_response = await UPLOAD_AND_RESIZE_FILE(
     files.image.data,
     dir,
-    {width: 200}
+    { width: 200 }
   );
   if (upload_image_response == false) {
     resp.error = true;
@@ -403,7 +407,7 @@ const _uplaodAudio = async (files, resp) => {
     // if no error, file has been deleted successfully
     console.log("File deleted!");
   });
-  resp.data = {path: response};
+  resp.data = { path: response };
   return resp;
 };
 const uplaodAudio = async (files) => {
