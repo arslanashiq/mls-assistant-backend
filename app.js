@@ -15,11 +15,6 @@ const fs = require("fs");
 
 app.use("/", index);
 
-// cron.schedule("* * * * * *", async () => {
-//   console.log("crone workign");
-//   await do_backup();
-// });
-
 // view engine setup
 app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "ejs");
