@@ -230,29 +230,26 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
   };
   return AWS_SES.sendEmail(params).promise(); // or something
 };
-const formData = require('form-data');
-const Mailgun = require('mailgun.js');
-
-// Initialize Mailgun client
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: "pubkey-664ea35f4b7e565c1ccc0fd93911111c" });
 
 // Function to send an email using Mailgun
-const sendEmail = async (to, subject, text, html)=> {
-    try {
-        const response = await mg.messages.create('sandbox-123.mailgun.org', {
-            from: "Excited User <mailgun@sandbox-123.mailgun.org>",
-            to: Array.isArray(to) ? to : [to],
-            subject: subject,
-            text: text,
-            html: html
-        });
-        console.log("Email sent successfully:", response);
-        return response;
-    } catch (error) {
-        console.error("Error sending email:", error);
-        throw error;
-    }
+const sendEmail = async (sender_email, receiver_email,email_subject, email_body)=> {
+  let API_KEY = 'key-fc10e270908d140be45ea9e56cb44f0d';
+  let DOMAIN = 'mail.cardup.me';
+  console.log("here");
+  const mailgun = require('mailgun-js')({ apiKey: API_KEY, domain: DOMAIN });
+  // sendMail = function (sender_email, receiver_email,email_subject, email_body)
+  //  {
+    const data = {
+      "from": sender_email,
+      "to": receiver_email,
+      "subject": email_subject,
+      "text": email_body
+    };
+    mailgun.messages().send(data, (error, body) => {
+      if (error) console.log(error)
+      else console.log(body);
+    });
+  // }
 }
 
 // Example usage of the sendEmail function

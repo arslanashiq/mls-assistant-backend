@@ -27,9 +27,8 @@ const google_login = async (req, res) => {
         }
         return res.status(200).json({
             code: 200,
-            message: "Login Successfull",
+            message: data.message,
             token: data.token,
-            // user: data.detail,
         });
     } catch (e) {
         RENDER_BAD_REQUEST(res, e);

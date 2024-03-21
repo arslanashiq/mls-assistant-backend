@@ -18,7 +18,7 @@ const {
   delete_from_session_by_user_id,
 } = require("../DAL/session");
 const jwt = require("jsonwebtoken");
-const {v1: uuidv1} = require("uuid");
+const { v1: uuidv1 } = require("uuid");
 const { sendEmail } = require("../utils/utils");
 //********************************************{Sign Up Customer}********************************************************/
 const _signupCustomer = async (body, resp) => {
@@ -29,7 +29,7 @@ const _signupCustomer = async (body, resp) => {
     return resp;
   }
   body.type = 1;
-  body.status = true;
+  body.status = false;
   // signup new user
   let customer_user = await signup_user(body);
   if (!customer_user) {
@@ -49,14 +49,14 @@ const _signupCustomer = async (body, resp) => {
     profile_image: "",
     contact_number: body.contact_number,
     post_code: body.post_code,
-    status: false,
+    status: true,
   };
   const final_customer = await Signup_customer(customer_obj);
   //generating token'
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt
-    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
+    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
     .toString();
   const add_session = await add_to_session(json_token, customer_user._id);
   if (!add_session) {
@@ -66,6 +66,19 @@ const _signupCustomer = async (body, resp) => {
   }
   customer_obj.token = token;
   resp.data = customer_obj;
+
+  const code =
+    Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
+  customer_user.verification_code = code;
+  await customer_user.save();
+
+  let sender_email = 'sender@gmail.com';
+  let receiver_email = body.email;
+  let email_subject = `Email Verification Code`;
+  let email_body = `Hi, Your Email verification code is ${code}`;
+  // User-defined function to send email
+  let result = sendEmail(sender_email, receiver_email, email_subject, email_body);
+
   return resp;
 };
 const signupCustomer = async (body) => {

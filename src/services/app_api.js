@@ -228,6 +228,7 @@ const _codeValidation = async (body, resp) => {
   if (user.verification_code == body.verification_code) {
     user.verification_code = "";
     user.verification_status = true;
+    user.status = true;
     await user.save();
     return resp;
   } else {
@@ -426,7 +427,7 @@ const uplaodAudio = async (files) => {
 
 //**********************************{GOOGLE LOGIN API}***************************************************
 const _GoogleloginUser = async (body, resp) => {
-  let token;
+  let token, message;
   const user = await find_user(body.email);
   if (!user) {
     body.type = 1;
@@ -451,21 +452,10 @@ const _GoogleloginUser = async (body, resp) => {
       profile_image: "",
       contact_number: body.contact_number,
       post_code: body.post_code,
-      status: false,
+      status: true,
     };
     const final_customer = await Signup_customer(customer_obj);
-
-    const access = "auth";
-    const json_token = uuidv1();
-    token = jwt
-      .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
-      .toString();
-    const add_session = await add_to_session(json_token, customer_user._id);
-    if (!add_session) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
+    message = "Please Validate Your account"
   } else {
     if (user.status == false) {
       resp.error = true;
@@ -488,6 +478,7 @@ const _GoogleloginUser = async (body, resp) => {
         return resp;
       }
     }
+    message = "Login Successfully";
   }
   // // let detail;
   // if (user.type == 0) {
@@ -498,7 +489,7 @@ const _GoogleloginUser = async (body, resp) => {
 
   resp.data = {
     token: token,
-    // detail: detail,
+    message: message,
   };
 
   return resp;
