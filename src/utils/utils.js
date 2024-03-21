@@ -235,7 +235,7 @@ const Mailgun = require('mailgun.js');
 
 // Initialize Mailgun client
 const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: "1af8fe547151284e9f198f69d76ac047-309b0ef4-acb69a19" });
+const mg = mailgun.client({ username: 'api', key: "pubkey-664ea35f4b7e565c1ccc0fd93911111c" });
 
 // Function to send an email using Mailgun
 const sendEmail = async (to, subject, text, html)=> {

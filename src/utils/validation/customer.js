@@ -11,6 +11,15 @@ function validate_customer_signup(body) {
   };
   return Joi.validate(body, schema);
 }
+
+function validate_google_customer(body) {
+  const schema = {
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    first_name: Joi.string().required().min(2).trim(),
+    last_name: Joi.string().required().min(2).trim(),
+  };
+  return Joi.validate(body, schema);
+}
 function validate_edit_customer_signup(body) {
   const schema = {
     first_name: Joi.string().required().min(2).trim(),
@@ -25,4 +34,5 @@ function validate_edit_customer_signup(body) {
 module.exports = {
   validate_customer_signup,
   validate_edit_customer_signup,
+  validate_google_customer
 };

@@ -11,15 +11,18 @@ const {
   add_to_session,
   get_session_by_user_id,
   delete_from_session,
+  add_to_session_with_out_id,
+  delete_from_session_by_user_id,
 } = require("../DAL/session");
 const {
   find_user,
   find_user_by_id,
   checking_email_exist,
+  signup_user,
 } = require("../DAL/user");
 const { detail_admin } = require("../DAL/admin");
 const {
-  find_customer_by_user_id,
+  find_customer_by_user_id, Signup_customer,
 } = require("../DAL/customer");
 const { v1: uuidv4 } = require("uuid");
 const { getAudioDurationInSeconds } = require("get-audio-duration");
@@ -38,15 +41,15 @@ const _loginUser = async (body, resp) => {
   //   resp.error_message = "Invalid Type!";
   //   return resp;
   // }
-  // const isValidPassword = await bcrypt.compare(body.password, user.password);
-  // if (!isValidPassword) {
-  //   resp.error = true;
-  //   resp.error_message = "Invalid Email or Password";
-  //   return resp;
-  // }
+  const isValidPassword = await bcrypt.compare(body.password, user.password);
+  if (!isValidPassword) {
+    resp.error = true;
+    resp.error_message = "Invalid Email or Password";
+    return resp;
+  }
   if (user.status == false) {
     resp.error = true;
-    resp.error_message = "Contact Support";
+    resp.error_message = "Please Validate Your Account";
     return resp;
   }
   // generating token
@@ -420,6 +423,96 @@ const uplaodAudio = async (files) => {
   resp = await _uplaodAudio(files, resp);
   return resp;
 };
+
+//**********************************{GOOGLE LOGIN API}***************************************************
+const _GoogleloginUser = async (body, resp) => {
+  let token;
+  const user = await find_user(body.email);
+  if (!user) {
+    body.type = 1;
+    body.status = false;
+    body.password = body.email;
+    // signup new user
+    let customer_user = await signup_user(body);
+    if (!customer_user) {
+      resp.error = true;
+      resp.error_message = "Something Went Wrong";
+      return resp;
+    }
+    let customer = {
+      _id: customer_user._id,
+      email: customer_user.email,
+    };
+    // add customer
+    const customer_obj = {
+      user_id: customer,
+      first_name: body.first_name,
+      last_name: body.last_name,
+      profile_image: "",
+      contact_number: body.contact_number,
+      post_code: body.post_code,
+      status: false,
+    };
+    const final_customer = await Signup_customer(customer_obj);
+
+    const access = "auth";
+    const json_token = uuidv1();
+    token = jwt
+      .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+      .toString();
+    const add_session = await add_to_session(json_token, customer_user._id);
+    if (!add_session) {
+      resp.error = true;
+      resp.error_message = "Something get wrong";
+      return resp;
+    }
+  } else {
+    if (user.status == false) {
+      resp.error = true;
+      resp.error_message = "Please Validate Your Account";
+      return resp;
+    } else {
+      let user_session = await get_session_by_user_id(user._id);
+      if (user_session) {
+        await delete_from_session_by_user_id(user._id);
+      }
+      const access = "auth";
+      const json_token = uuidv1();
+      token = jwt
+        .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+        .toString();
+      const add_session = await add_to_session(json_token, user._id);
+      if (!add_session) {
+        resp.error = true;
+        resp.error_message = "Something get wrong";
+        return resp;
+      }
+    }
+  }
+  // // let detail;
+  // if (user.type == 0) {
+  //   detail = await detail_admin(user._id);
+  // } else {
+  //   detail = await find_customer_by_user_id(user._id);
+  // }
+
+  resp.data = {
+    token: token,
+    // detail: detail,
+  };
+
+  return resp;
+};
+const GoogleloginUser = async (body) => {
+  let resp = {
+    error: false,
+    error_message: "",
+    data: {},
+  };
+
+  resp = await _GoogleloginUser(body, resp);
+  return resp;
+};
 module.exports = {
   loginUser,
   changePassword,
@@ -431,4 +524,5 @@ module.exports = {
   uplaodImageS3,
   uplaodImage,
   uplaodAudio,
+  GoogleloginUser
 };

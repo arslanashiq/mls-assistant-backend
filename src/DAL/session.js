@@ -16,7 +16,13 @@ const add_to_session = async (json_token, user_id) => {
   session = await session.save();
   return session;
 };
-
+const add_to_session_with_out_id = async (json_token) => {
+  let session = new Session({
+    token: json_token,
+  });
+  session = await session.save();
+  return session;
+};
 const delete_from_session = async (id) => {
   const user = await Session.findByIdAndDelete(id);
   return user;
@@ -33,4 +39,5 @@ module.exports = {
   get_session_by_user_id,
   delete_from_session,
   delete_from_session_by_user_id,
+  add_to_session_with_out_id
 };

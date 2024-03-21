@@ -19,6 +19,7 @@ const {
 } = require("../DAL/session");
 const jwt = require("jsonwebtoken");
 const {v1: uuidv1} = require("uuid");
+const { sendEmail } = require("../utils/utils");
 //********************************************{Sign Up Customer}********************************************************/
 const _signupCustomer = async (body, resp) => {
   const user = await find_user(body.email);

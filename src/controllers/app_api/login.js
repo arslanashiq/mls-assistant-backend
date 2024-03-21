@@ -22,7 +22,7 @@ const login = async (req, res) => {
     if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message || "Invalid Email",
+        message: error_message,
       });
     }
     return res.status(200).json({
