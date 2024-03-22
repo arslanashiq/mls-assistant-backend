@@ -14,12 +14,14 @@ function validate_customer_signup(body) {
 function validate_customer_search_history(body) {
   const schema = {
     search_data: Joi.string().required(),
+    name: Joi.string().required(),
   };
   return Joi.validate(body, schema);
 }
 function validate_edit_customer_search_history(body) {
   const schema = {
     search_data: Joi.string().required(),
+    name: Joi.string().required(),
     _id: Joi.string().required(),
   };
   return Joi.validate(body, schema);

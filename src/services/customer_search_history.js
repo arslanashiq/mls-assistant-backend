@@ -6,14 +6,15 @@ const _AddCustomerSearchHistory = async (body, user_id, resp) => {
     console.log(search_history, "search_history")
     if (search_history) {
         let object = {
-            data: body.search_data
+            data: body.search_data,
+            name: body.name
         }
         search_history.search_data.push(object);
         search_history = await search_history.save();
     } else {
         let object = {
             user_id: user_id,
-            search_data: [{ data: body.search_data }]
+            search_data: [{ data: body.search_data, name: body.name }]
         }
         search_history = await save_search_history(object);
     }
@@ -33,13 +34,13 @@ const AddCustomerSearchHistory = async (body, user_id) => {
 //********************************************{Edit History}********************************************************/
 const _EditCustomerSearchHistory = async (body, user_id, resp) => {
     console.log(body, "body");
-    let search_history = await find_user_search_history(user_id);
+    let search_history = await find_user_search_history_by_id(body._id);
     if (!search_history) {
         resp.error = true;
         resp.error_message = "History Does Not Exsist";
         return resp;
     }
-    await update_user_search_history(user_id, body._id, body.search_data);
+    await update_user_search_history(user_id, body._id, body);
     return resp;
 };
 const EditCustomerSearchHistory = async (body, user_id) => {

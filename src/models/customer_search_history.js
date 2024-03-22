@@ -10,6 +10,9 @@ const CustomerSearchHistorySchema = new mongoose.Schema({
     search_data: [{
         data: {
             type: String
+        },
+        name: {
+            type: String
         }
     }]
 });
