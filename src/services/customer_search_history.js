@@ -1,9 +1,7 @@
-const { find_user_by_id } = require("../DAL/user");
 const { save_search_history, find_user_search_history, update_user_search_history, delete_user_search_history, find_user_search_history_and_delete_by_user_id, find_user_search_history_by_id } = require("../DAL/customer_search_history");
 //********************************************{Add History}********************************************************/
 const _AddCustomerSearchHistory = async (body, user_id, resp) => {
     let search_history = await find_user_search_history(user_id);
-    console.log(search_history, "search_history")
     if (search_history) {
         let object = {
             data: body.search_data,
@@ -33,7 +31,6 @@ const AddCustomerSearchHistory = async (body, user_id) => {
 };
 //********************************************{Edit History}********************************************************/
 const _EditCustomerSearchHistory = async (body, user_id, resp) => {
-    console.log(body, "body");
     let search_history = await find_user_search_history_by_id(body._id);
     if (!search_history) {
         resp.error = true;

@@ -26,6 +26,13 @@ function validate_edit_customer_search_history(body) {
   };
   return Joi.validate(body, schema);
 }
+function validate_edit_customer_property(body) {
+  const schema = {
+    property_data: Joi.object().required(),
+    _id: Joi.string().required(),
+  };
+  return Joi.validate(body, schema);
+}
 function validate_google_customer(body) {
   const schema = {
     email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
@@ -45,10 +52,19 @@ function validate_edit_customer_signup(body) {
   return Joi.validate(body, schema);
 }
 
+
+function validate_customer_property(body) {
+  const schema = {
+    property_data: Joi.object().required(),
+  };
+  return Joi.validate(body, schema);
+}
 module.exports = {
   validate_customer_signup,
   validate_edit_customer_signup,
   validate_google_customer,
   validate_customer_search_history,
-  validate_edit_customer_search_history
+  validate_edit_customer_search_history,
+  validate_customer_property,
+  validate_edit_customer_property
 };
