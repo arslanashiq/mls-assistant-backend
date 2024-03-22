@@ -7,7 +7,11 @@ const CustomerSearchHistorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
     },
-    search_data: []
+    search_data: [{
+        data: {
+            type: String
+        }
+    }]
 });
 
 CustomerSearchHistorySchema.plugin(timestamps);

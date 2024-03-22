@@ -24,7 +24,7 @@ const signup_customer = async (req, res) => {
     res.status(200).json({
       code: 200,
       message: "Customer Signup Successfully",
-      customer: data,
+      message: data,
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

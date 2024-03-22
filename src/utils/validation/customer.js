@@ -13,7 +13,14 @@ function validate_customer_signup(body) {
 }
 function validate_customer_search_history(body) {
   const schema = {
-    search_data: Joi.array().required(),
+    search_data: Joi.string().required(),
+  };
+  return Joi.validate(body, schema);
+}
+function validate_edit_customer_search_history(body) {
+  const schema = {
+    search_data: Joi.string().required(),
+    _id: Joi.string().required(),
   };
   return Joi.validate(body, schema);
 }
@@ -40,5 +47,6 @@ module.exports = {
   validate_customer_signup,
   validate_edit_customer_signup,
   validate_google_customer,
-  validate_customer_search_history
+  validate_customer_search_history,
+  validate_edit_customer_search_history
 };

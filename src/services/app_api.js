@@ -6,6 +6,7 @@ const {
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
   NOTIFY_BY_EMAIL_FROM_SES,
+  sendEmail,
 } = require("../utils/utils");
 const {
   add_to_session,
@@ -49,7 +50,7 @@ const _loginUser = async (body, resp) => {
   }
   if (user.status == false) {
     resp.error = true;
-    resp.error_message = "Please Validate Your Account";
+    resp.error_message = "un_valid_account";
     return resp;
   }
   // generating token
@@ -230,6 +231,27 @@ const _codeValidation = async (body, resp) => {
     user.verification_status = true;
     user.status = true;
     await user.save();
+    const access = "auth";
+    const json_token = uuidv1();
+    const token = jwt
+      .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+      .toString();
+    const add_session = await add_to_session(json_token, user._id);
+    if (!add_session) {
+      resp.error = true;
+      resp.error_message = "Something get wrong";
+      return resp;
+    }
+    let customer = await find_customer_by_user_id(user._id);
+    if (!customer) {
+      resp.error = true;
+      resp.error_message = "Customer not exsist";
+      return resp;
+    }
+    resp.data = {
+      customer: customer,
+      token: token
+    }
     return resp;
   } else {
     resp.error = true;
@@ -427,7 +449,7 @@ const uplaodAudio = async (files) => {
 
 //**********************************{GOOGLE LOGIN API}***************************************************
 const _GoogleloginUser = async (body, resp) => {
-  let token, message;
+  let token, message, valid_status;
   const user = await find_user(body.email);
   if (!user) {
     body.type = 1;
@@ -455,11 +477,25 @@ const _GoogleloginUser = async (body, resp) => {
       status: true,
     };
     const final_customer = await Signup_customer(customer_obj);
-    message = "Please Validate Your account"
+    message = "Please Validate Your account";
+
+
+    const code =
+      Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
+    customer_user.verification_code = code;
+    await customer_user.save();
+
+    let sender_email = 'sender@gmail.com';
+    let receiver_email = body.email;
+    let email_subject = `Email Verification Code`;
+    let email_body = `Hi, Your Email verification code is ${code}`;
+    // User-defined function to send email
+     sendEmail(sender_email, receiver_email, email_subject, email_body);
+
   } else {
     if (user.status == false) {
       resp.error = true;
-      resp.error_message = "Please Validate Your Account";
+      resp.error_message = "un_valid_account";
       return resp;
     } else {
       let user_session = await get_session_by_user_id(user._id);

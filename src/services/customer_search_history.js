@@ -1,17 +1,19 @@
 const { find_user_by_id } = require("../DAL/user");
-const { save_search_history, find_user_search_history } = require("../DAL/customer_search_history");
+const { save_search_history, find_user_search_history, update_user_search_history, delete_user_search_history, find_user_search_history_and_delete_by_user_id, find_user_search_history_by_id } = require("../DAL/customer_search_history");
 //********************************************{Add History}********************************************************/
 const _AddCustomerSearchHistory = async (body, user_id, resp) => {
-
     let search_history = await find_user_search_history(user_id);
     console.log(search_history, "search_history")
     if (search_history) {
-        search_history.search_data = body.search_data;
+        let object = {
+            data: body.search_data
+        }
+        search_history.search_data.push(object);
         search_history = await search_history.save();
     } else {
         let object = {
             user_id: user_id,
-            search_data: body.search_data
+            search_data: [{ data: body.search_data }]
         }
         search_history = await save_search_history(object);
     }
@@ -26,6 +28,28 @@ const AddCustomerSearchHistory = async (body, user_id) => {
     };
 
     resp = await _AddCustomerSearchHistory(body, user_id, resp);
+    return resp;
+};
+//********************************************{Edit History}********************************************************/
+const _EditCustomerSearchHistory = async (body, user_id, resp) => {
+    console.log(body, "body");
+    let search_history = await find_user_search_history(user_id);
+    if (!search_history) {
+        resp.error = true;
+        resp.error_message = "History Does Not Exsist";
+        return resp;
+    }
+    await update_user_search_history(user_id, body._id, body.search_data);
+    return resp;
+};
+const EditCustomerSearchHistory = async (body, user_id) => {
+    let resp = {
+        error: false,
+        error_message: "",
+        data: {},
+    };
+
+    resp = await _EditCustomerSearchHistory(body, user_id, resp);
     return resp;
 };
 //********************************************{GEt History}********************************************************/
@@ -49,8 +73,35 @@ const GetCustomerSearchHistory = async (user_id) => {
     resp = await _GetCustomerSearchHistory(user_id, resp);
     return resp;
 };
+//********************************************{GEt History}********************************************************/
+const _DeleteCustomerSearchHistory = async (user_id, history_id, resp) => {
+    let search_history = await find_user_search_history_by_id(history_id);
+    if (!search_history) {
+        resp.error = true;
+        resp.error_message = "History Does Not Exsist";
+        return resp;
+    }
+    if (search_history.search_data.length <= 1) {
+        await find_user_search_history_and_delete_by_user_id(user_id)
+    } else {
+        await delete_user_search_history(user_id, history_id);
+    }
+    return resp;
+};
+const DeleteCustomerSearchHistory = async (user_id, history_id) => {
+    let resp = {
+        error: false,
+        error_message: "",
+        data: {},
+    };
+
+    resp = await _DeleteCustomerSearchHistory(user_id, history_id, resp);
+    return resp;
+};
 
 module.exports = {
     AddCustomerSearchHistory,
-    GetCustomerSearchHistory
+    EditCustomerSearchHistory,
+    GetCustomerSearchHistory,
+    DeleteCustomerSearchHistory
 }

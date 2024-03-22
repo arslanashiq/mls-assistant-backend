@@ -247,7 +247,7 @@ const sendEmail = async (sender_email, receiver_email,email_subject, email_body)
     };
     mailgun.messages().send(data, (error, body) => {
       if (error) console.log(error)
-      else console.log(body);
+      else console.log(body.message);
     });
   // }
 }

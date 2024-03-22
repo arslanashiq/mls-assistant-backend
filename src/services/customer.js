@@ -51,21 +51,8 @@ const _signupCustomer = async (body, resp) => {
     post_code: body.post_code,
     status: true,
   };
-  const final_customer = await Signup_customer(customer_obj);
-  //generating token'
-  const access = "auth";
-  const json_token = uuidv1();
-  const token = jwt
-    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
-    .toString();
-  const add_session = await add_to_session(json_token, customer_user._id);
-  if (!add_session) {
-    resp.error = true;
-    resp.error_message = "Something get wrong";
-    return resp;
-  }
-  customer_obj.token = token;
-  resp.data = customer_obj;
+  await Signup_customer(customer_obj);
+  resp.data = "Please Verify Your Email";
 
   const code =
     Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
