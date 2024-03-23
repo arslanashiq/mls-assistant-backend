@@ -201,9 +201,56 @@ const _validateEmailAddress = async (body, resp) => {
     Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
   user.verification_code = code;
   await user.save();
-  let subject = `Email Verification Code`;
-  let email_body = `Hi, Your Email verification code is ${code}`;
-  await NOTIFY_BY_EMAIL_FROM_SES(user.email, subject, email_body);
+  let sender_email = 'support@gmail.com';
+  let receiver_email = body.email;
+  let email_subject = `Verification Code`;
+  let email_body = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Code</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+  
+    .container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+  
+    .verification-code {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+  
+    .code {
+      font-weight: bold;
+      font-size: 24px;
+      color: #007bff;
+    }
+  </style>
+  </head>
+  <body>
+  <div class="container">
+    <p class="verification-code">Hi, Your Verification code is <span class="code">${code}</span>.</p>
+    <p>Please Enter this code to reset your password.</p>
+  </div>
+  </body>
+  </html>`;
+  // User-defined function to send email
+  await sendEmail(sender_email, receiver_email, email_subject, email_body);
   return resp;
 };
 const validateEmailAddress = async (body) => {
@@ -292,7 +339,6 @@ const _resetPassword = async (body, resp) => {
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(body.password, salt);
-  user.verification_status = false;
   await user.save();
   return resp;
 };
@@ -446,7 +492,6 @@ const uplaodAudio = async (files) => {
   resp = await _uplaodAudio(files, resp);
   return resp;
 };
-
 //**********************************{GOOGLE LOGIN API}***************************************************
 const _GoogleloginUser = async (body, resp) => {
   let token, message, valid_status;
@@ -485,12 +530,12 @@ const _GoogleloginUser = async (body, resp) => {
     customer_user.verification_code = code;
     await customer_user.save();
 
-    let sender_email = 'sender@gmail.com';
+    let sender_email = 'support@gmail.com';
     let receiver_email = body.email;
     let email_subject = `Email Verification Code`;
     let email_body = `Hi, Your Email verification code is ${code}`;
     // User-defined function to send email
-     sendEmail(sender_email, receiver_email, email_subject, email_body);
+    sendEmail(sender_email, receiver_email, email_subject, email_body);
 
   } else {
     if (user.status == false) {

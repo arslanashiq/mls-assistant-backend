@@ -237,19 +237,17 @@ const sendEmail = async (sender_email, receiver_email,email_subject, email_body)
   let DOMAIN = 'mail.cardup.me';
   console.log("here");
   const mailgun = require('mailgun-js')({ apiKey: API_KEY, domain: DOMAIN });
-  // sendMail = function (sender_email, receiver_email,email_subject, email_body)
-  //  {
+  
     const data = {
       "from": sender_email,
       "to": receiver_email,
       "subject": email_subject,
-      "text": email_body
+      "html": email_body
     };
     mailgun.messages().send(data, (error, body) => {
       if (error) console.log(error)
       else console.log(body.message);
     });
-  // }
 }
 
 // Example usage of the sendEmail function

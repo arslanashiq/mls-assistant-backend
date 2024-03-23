@@ -273,6 +273,30 @@ const listCustomer = async (text, limit, page) => {
   resp = await _listCustomer(text, limit, page, resp);
   return resp;
 };
+//*****************************************************{SEND EMAIL BY CUSTOMER} **********************************************/
+const _CustomerSendEmail = async (user_id, body, resp) => {
+  let user = await find_user_by_id(user_id);
+  let sender_email = user.email;
+  let receiver_email = body.email;
+  let email_subject = `Email Verification Code`;
+  let email_body = `<h1>Hi, Your Email verification code</h1>`;
+  // User-defined function to send email
+  let result = sendEmail(sender_email, receiver_email, email_subject, email_body);
+  resp.data = {
+
+  };
+  return resp;
+};
+const CustomerSendEmail = async (user_id, body) => {
+  let resp = {
+    error: false,
+    error_message: "",
+    data: {},
+  };
+
+  resp = await _CustomerSendEmail(user_id, body, resp);
+  return resp;
+};
 module.exports = {
   signupCustomer,
   editCustomer,
@@ -280,4 +304,5 @@ module.exports = {
   detailCustomer,
   deleteCustomer,
   listCustomer,
+  CustomerSendEmail
 };

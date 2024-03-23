@@ -11,6 +11,13 @@ function validate_customer_signup(body) {
   };
   return Joi.validate(body, schema);
 }
+function validate_send_email(body) {
+  const schema = {
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    data: Joi.string().required(),
+  };
+  return Joi.validate(body, schema);
+}
 function validate_customer_search_history(body) {
   const schema = {
     search_data: Joi.string().required(),
@@ -66,5 +73,6 @@ module.exports = {
   validate_customer_search_history,
   validate_edit_customer_search_history,
   validate_customer_property,
-  validate_edit_customer_property
+  validate_edit_customer_property,
+  validate_send_email
 };
