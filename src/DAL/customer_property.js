@@ -1,20 +1,7 @@
 const { customer_property } = require("../models/customer_property");
 const save_customer_property = async (customer_obj) => {
-    const replaced_customer_obj = replacePeriodsWithUnicodeEquivalent(customer_obj);
-    console.log(replaced_customer_obj.property_data, "replaced_customer_obj");
-    // const property = new customer_property(replaced_customer_obj);
-    // return await property.save();
-
-    function replacePeriodsWithUnicodeEquivalent(obj) {
-        const replacedObj = {};
-        for (const key in obj) {
-            if (Object.hasOwnProperty.call(obj, key)) {
-                const newKey = key.replace(/\./g, '\u002E');
-                replacedObj[newKey] = obj[key];
-            }
-        }
-        return replacedObj;
-    }
+    const property = new customer_property(customer_obj);
+    return await property.save();
 };
 
 const find_user_customer_property = async (user_id) => {

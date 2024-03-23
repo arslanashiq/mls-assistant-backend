@@ -8,11 +8,7 @@ const { save_customer_property,
 const _AddCustomerProperty = async (body, user_id, resp) => {
     let customer_property = await find_user_customer_property(user_id);
     if (customer_property) {
-        let object = {
-            data: body.property_data,
-            name: body.name
-        }
-        customer_property.property_data.push(object);
+        customer_property.property_data.push(body.property_data);
         customer_property = await customer_property.save();
     } else {
         let array = [];

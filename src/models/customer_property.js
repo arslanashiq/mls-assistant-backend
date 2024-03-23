@@ -9,10 +9,10 @@ const CustomerPropertySchema = new mongoose.Schema({
     },
     property_data: [{
         data: {
-            type: Object,// Disable validation for this field
+            type: Object
         },
     }]
-}, { validateBeforeSave: false }); 
+});
 
 CustomerPropertySchema.plugin(timestamps);
 
