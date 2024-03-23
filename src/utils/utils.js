@@ -1,7 +1,7 @@
 const sharp = require("sharp");
 const s3 = require("../../config/S3_config/s3.config");
 let upload = require("../../config/S3_config/multer.config");
-const {v1: uuidv4} = require("uuid");
+const { v1: uuidv4 } = require("uuid");
 const fs = require("fs-extra");
 const path = require("path");
 const AWS = require("aws-sdk");
@@ -232,26 +232,82 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
 };
 
 // Function to send an email using Mailgun
-const sendEmail = async (sender_email, receiver_email,email_subject, email_body)=> {
+const sendEmail = async (sender_email, receiver_email, email_subject, email_body) => {
   let API_KEY = 'key-fc10e270908d140be45ea9e56cb44f0d';
   let DOMAIN = 'mail.cardup.me';
   console.log("here");
   const mailgun = require('mailgun-js')({ apiKey: API_KEY, domain: DOMAIN });
-  
-    const data = {
-      "from": sender_email,
-      "to": receiver_email,
-      "subject": email_subject,
-      "html": email_body
-    };
-    mailgun.messages().send(data, (error, body) => {
-      if (error) console.log(error)
-      else console.log(body.message);
-    });
+
+  const data = {
+    "from": sender_email,
+    "to": receiver_email,
+    "subject": email_subject,
+    "html": email_body
+  };
+  mailgun.messages().send(data, (error, body) => {
+    if (error) console.log(error)
+    else console.log(body.message);
+  });
 }
 
 // Example usage of the sendEmail function
 
+//*******************************{AWS SES Email}*******************************
+const email_template_code_verification_function = async (
+  code
+) => {
+
+  let email_template = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Email Validation</title>
+      <style>
+          body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              background-color: #f4f4f4;
+          }
+          .container {
+              max-width: 600px;
+              margin: 20px auto;
+              padding: 20px;
+              background-color: #ffffff;
+              border-radius: 10px;
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          h2 {
+              color: #333333;
+          }
+          p {
+              color: #666666;
+          }
+          .code {
+              background-color: #f0f0f0;
+              padding: 10px;
+              border-radius: 5px;
+              font-family: monospace;
+              font-size: 16px;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <h2>Email Validation</h2>
+          <p>Hello there,</p>
+          <p>Please use the following code to validate your email address:</p>
+          <p class="code">${code}</p>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+          <p>Thank you!</p>
+      </div>
+  </body>
+  </html>
+  `
+
+  return email_template
+};
 module.exports = {
   RENDER_BAD_REQUEST,
   CHANGE_DEL_ORDER,
@@ -264,5 +320,6 @@ module.exports = {
   UPLOAD_S3_IMAGE,
   SEND_NOTIFICATION,
   NOTIFY_BY_EMAIL_FROM_SES,
-  sendEmail
+  sendEmail,
+  email_template_code_verification_function
 };

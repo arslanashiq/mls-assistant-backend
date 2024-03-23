@@ -7,6 +7,7 @@ const {
   UPLOAD_AUDIO_FILE,
   NOTIFY_BY_EMAIL_FROM_SES,
   sendEmail,
+  email_template_code_verification_function,
 } = require("../utils/utils");
 const {
   add_to_session,
@@ -533,7 +534,7 @@ const _GoogleloginUser = async (body, resp) => {
     let sender_email = 'support@gmail.com';
     let receiver_email = body.email;
     let email_subject = `Email Verification Code`;
-    let email_body = `Hi, Your Email verification code is ${code}`;
+    let email_body = await email_template_code_verification_function(code);
     // User-defined function to send email
     sendEmail(sender_email, receiver_email, email_subject, email_body);
 

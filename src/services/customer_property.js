@@ -15,9 +15,11 @@ const _AddCustomerProperty = async (body, user_id, resp) => {
         customer_property.property_data.push(object);
         customer_property = await customer_property.save();
     } else {
+        let array = [];
+        array.push(body.property_data);
         let object = {
             user_id: user_id,
-            property_data: [{ data: body.property_data, name: body.name }]
+            property_data: array
         }
         customer_property = await save_customer_property(object);
     }
