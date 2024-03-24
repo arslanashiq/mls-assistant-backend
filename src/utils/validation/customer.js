@@ -14,7 +14,7 @@ function validate_customer_signup(body) {
 function validate_send_email(body) {
   const schema = {
     email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
-    data: Joi.string().required(),
+    property_id: Joi.string().required(),
   };
   return Joi.validate(body, schema);
 }
