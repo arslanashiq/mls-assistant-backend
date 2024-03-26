@@ -20,11 +20,10 @@ const customer_send_email = async (req, res) => {
                 message: error_message,
             });
         }
-
         res.status(200).json({
             code: 200,
-            message: "Customer Signup Successfully",
-            message: data,
+            message: "",
+            message: "EMAIL SENT",
         });
     } catch (e) {
         RENDER_BAD_REQUEST(res, e);
