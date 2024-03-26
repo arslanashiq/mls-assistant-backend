@@ -11,7 +11,7 @@ register_route({
 register_route({
   router,
   route: "/customer_send_email",
-  auth_enable: true,
+  auth_enable: false,
   post_method: customer_send_email,
 });
 // =================CUSTOMER SERACH HISTORY MODULE=================

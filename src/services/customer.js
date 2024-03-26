@@ -276,39 +276,29 @@ const listCustomer = async (text, limit, page) => {
 };
 //*****************************************************{SEND EMAIL BY CUSTOMER} **********************************************/
 const _CustomerSendEmail = async (user_id, body, resp) => {
-    let property = await find_customer_property_by_id(body.property_id);
-    if (!property) {
-        resp.error = true;
-        resp.error_message = "Property Does Not Exsist!";
-        return resp;
-    }
-    let propertyDataArray = property.property_data;
-    let objectId = body.property_id;
-    // console.log(id, "id");
-    // console.log(propertyDataArray, "propertyDataArray");
-    let property_object = propertyDataArray.find(obj => obj._id.equals(objectId));
-    console.log(property_object.data.Media[0].MediaURL, "Media");
-    console.log(property_object.data.ListPrice, "ListPrice");
-    console.log(property_object.data.BedroomsTotal, "BedroomsTotal");
-    console.log(property_object.data.BathroomsFull, "BathroomsFull");
-    console.log(property_object.data.LivingArea, "LivingArea");
-    console.log(property_object.data.LotSizeUnits, "LotSizeUnits");
-    console.log(property_object.data.UnparsedAddress, "UnparsedAddress");
+    let property_object = body.property_object;
+    console.log(property_object.Media[0].MediaURL, "Media");
+    console.log(property_object.ListPrice, "ListPrice");
+    console.log(property_object.BedroomsTotal, "BedroomsTotal");
+    console.log(property_object.BathroomsFull, "BathroomsFull");
+    console.log(property_object.LivingArea, "LivingArea");
+    console.log(property_object.LotSizeUnits, "LotSizeUnits");
+    console.log(property_object.UnparsedAddress, "UnparsedAddress");
+    console.log(body.sender_email,"body.sender_email")
+    console.log(body.receiver_email,"body.receiver_email")
 
-
-    let user = await find_user_by_id(user_id);
-    let sender_email = user.email;
-    let receiver_email = body.email;
+    let sender_email = body.sender_email;
+    let receiver_email = body.receiver_email;
     let email_subject = `Email Verification Code`;
     let email_body = await property_email_template_function(
-        property_object.data.Media[0].MediaURL,
-        property_object.data.ListPrice,
-        property_object.data.UnparsedAddress,
-        property_object.data.BedroomsTotal,
-        property_object.data.BathroomsFull,
-        property_object.data.LivingArea,
-        property_object.data.LotSizeUnits,
-        );
+        property_object.Media[0].MediaURL,
+        property_object.ListPrice,
+        property_object.UnparsedAddress,
+        property_object.BedroomsTotal,
+        property_object.BathroomsFull,
+        property_object.LivingArea,
+        property_object.LotSizeUnits,
+    );
     // // User-defined function to send email
     let result = sendEmail(sender_email, receiver_email, email_subject, email_body);
     resp.data = {
