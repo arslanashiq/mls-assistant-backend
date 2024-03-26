@@ -2,6 +2,8 @@ const router = require("express").Router();
 const { register_route } = require("../../../utils/reg_routes");
 const signup_customer = require("../../../controllers/customer/signup_customer");
 const customer_send_email = require("../../../controllers/customer/customer_send_email");
+const edit_customer = require("../../../controllers/customer/edit_customer");
+
 register_route({
   router,
   route: "/signup_customer",
@@ -13,6 +15,12 @@ register_route({
   route: "/customer_send_email",
   auth_enable: false,
   post_method: customer_send_email,
+});
+register_route({
+  router,
+  route: "/edit_customer",
+  auth_enable: true,
+  put_method: edit_customer,
 });
 // =================CUSTOMER SERACH HISTORY MODULE=================
 const add_customer_search_history = require("../../../controllers/customer_search_history/add_customer_search_history");

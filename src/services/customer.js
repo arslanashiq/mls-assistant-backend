@@ -108,9 +108,7 @@ const _editCustomer = async (body, user_id, resp) => {
     }
     customer_detail.first_name = body.first_name;
     customer_detail.last_name = body.last_name;
-    customer_detail.profile_image = body.profile_image;
     customer_detail.contact_number = body.contact_number;
-    customer_detail.post_code = body.post_code;
     await customer_detail.save();
     resp.data = customer_detail;
     return resp;

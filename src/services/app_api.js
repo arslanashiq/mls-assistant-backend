@@ -495,11 +495,11 @@ const uplaodAudio = async (files) => {
 };
 //**********************************{GOOGLE LOGIN API}***************************************************
 const _GoogleloginUser = async (body, resp) => {
-  let token, message, valid_status;
+  let token, message;
   const user = await find_user(body.email);
   if (!user) {
     body.type = 1;
-    body.status = false;
+    body.status = true;
     body.password = body.email;
     // signup new user
     let customer_user = await signup_user(body);
@@ -523,21 +523,17 @@ const _GoogleloginUser = async (body, resp) => {
       status: true,
     };
     const final_customer = await Signup_customer(customer_obj);
-    message = "Please Validate Your account";
-
-
-    const code =
-      Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
-    customer_user.verification_code = code;
-    await customer_user.save();
-
-    let sender_email = 'support@gmail.com';
-    let receiver_email = body.email;
-    let email_subject = `Email Verification Code`;
-    let email_body = await email_template_code_verification_function(code);
-    // User-defined function to send email
-    sendEmail(sender_email, receiver_email, email_subject, email_body);
-
+    const access = "auth";
+    const json_token = uuidv1();
+    token = jwt
+      .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+      .toString();
+    const add_session = await add_to_session(json_token, customer_user._id);
+    if (!add_session) {
+      resp.error = true;
+      resp.error_message = "Something get wrong";
+      return resp;
+    }
   } else {
     if (user.status == false) {
       resp.error = true;
@@ -560,15 +556,9 @@ const _GoogleloginUser = async (body, resp) => {
         return resp;
       }
     }
-    message = "Login Successfully";
-  }
-  // // let detail;
-  // if (user.type == 0) {
-  //   detail = await detail_admin(user._id);
-  // } else {
-  //   detail = await find_customer_by_user_id(user._id);
-  // }
 
+  }
+  message = "Login Successfully";
   resp.data = {
     token: token,
     message: message,

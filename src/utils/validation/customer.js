@@ -53,9 +53,7 @@ function validate_edit_customer_signup(body) {
   const schema = {
     first_name: Joi.string().required().min(2).trim(),
     last_name: Joi.string().required().min(2).trim(),
-    profile_image: Joi.string().required().trim().allow(""),
     contact_number: Joi.string().required().trim(),
-    post_code: Joi.string().required().trim(),
   };
   return Joi.validate(body, schema);
 }
